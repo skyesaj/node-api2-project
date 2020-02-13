@@ -1,10 +1,10 @@
 const express = require("express");
-const Post = require("../routes/Post.js");
+const Post = require("../routes/Posts.js");
 
 const server = express();
 
 server.use(express.json());
-server.use("/api/routes", Post);
+server.use("/api/posts", Post);
 
 server.get("/", (req, res) => {
   res.send(`

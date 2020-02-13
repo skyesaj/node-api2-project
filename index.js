@@ -14,8 +14,11 @@
 //    <h1> Post API </h1>
 //    `);
 // });
+
 const server = require("./api/server.js");
 
-server.listen(5000, () => {
+const Port = process.env.PORT || 5000;
+
+server.listen(Port, () => {
   console.log("\n *** Server Running on http://localhost:5000 ***\n");
 });

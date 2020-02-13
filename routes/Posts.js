@@ -29,21 +29,28 @@ router.post("/", (req, res) => {
 // comments
 
 router.post("/:id/comments", (req, res) => {
-  const info = req.body;
-  if (!info.text) {
-    res.status(400).json({ error: "error" });
-  } else {
-    db.insertComment(info)
-      .then(comment => {
-        if (comment) {
-          res.status(201).json(comment);
-        } else {
-          res.status(404).json({ error: "error" });
-        }
+  const { id } = req.params;
+  const info = { ...req.body, post_id: id };
+
+  if (id) {
+    // find post
+    db.findById(id)
+      .then(post => {
+        // added comment
+        db.insertComment(info)
+          .then(comment => {
+            res.status(201).json(comment);
+          })
+          // dont added a comment
+          .catch(error => {
+            console.log(error);
+            console.log(info);
+            res.status(500).json({ error: "error" });
+          });
       })
+      // cant find post
       .catch(error => {
-        console.log("error on comments", error);
-        res.status(500).json({ error: "error" });
+        res.status(404).json({ message: "id not found" });
       });
   }
 });
@@ -90,7 +97,7 @@ router.get("/:id/comments", (req, res) => {
   db.findPostComments(id)
     .then(comments => {
       if (comments.length !== 0) {
-        res.status(200).json(comment);
+        res.status(200).json(comments);
       } else {
         res.status(404).json({ error: "error" });
       }
